@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import auth from '../../../utils/firebase.config';
 
 const initialState = {
@@ -12,6 +12,7 @@ const initialState = {
 
 export const createUser = createAsyncThunk("userSlice/createUser", async ({ email, password, name }) => {
   try {
+
     const data = await createUserWithEmailAndPassword(auth, email, password);
     await updateProfile(auth.currentUser, {
       displayName: name,
@@ -28,6 +29,22 @@ export const createUser = createAsyncThunk("userSlice/createUser", async ({ emai
   }
 });
 
+export const loginUser = createAsyncThunk("userSlice/loginUser", async ({ email, password }) => {
+  const data = await signInWithEmailAndPassword(auth, email, password);
+  return {
+    email: data.user.email,
+    name: data.user.displayName
+  }
+})
+export const googleSignIn = createAsyncThunk("userSlice/googleUser", async () => {
+  const provider = new GoogleAuthProvider();
+  const data = await googleSignIn(auth, provider)
+  return {
+    email: data.user.email,
+    name: data.user.displayName
+  }
+})
+
 const userSlice = createSlice({
   name: 'userSlice',
   initialState,
@@ -38,6 +55,10 @@ const userSlice = createSlice({
     },
     toggleLoading: (state, { payload }) => {
       state.isLoading = payload;
+    },
+    logout: (state) => {
+      state.name = '';
+      state.email = '';
     }
   },
 
@@ -66,6 +87,6 @@ const userSlice = createSlice({
 
   }
 });
-export const { setUser , toggleLoading} = userSlice.actions
+export const { setUser, toggleLoading, logout } = userSlice.actions
 
 export default userSlice.reducer;

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import loginImage from '../assets/image/login.svg';
 import { useForm, useWatch } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { createUser } from '../redux/features/user/userSlice';
+import { createUser, googleSignIn } from '../redux/features/user/userSlice';
 import { useDispatch } from 'react-redux';
 const Signup = () => {
   const { handleSubmit, register, control } = useForm();
@@ -37,11 +37,16 @@ const Signup = () => {
         name
       })
     )
+    navigate("/")
     console.log(name, email, password);
   };
 
   const handleGoogleLogin = () => {
     // Google Login
+    dispatch(
+      googleSignIn()
+    )
+    navigate("/")
   };
 
   return (
