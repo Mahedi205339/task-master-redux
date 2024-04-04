@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 import loginImage from '../assets/image/login.svg';
 import { useForm, useWatch } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { createUser, googleSignIn } from '../redux/features/user/userSlice';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 const Signup = () => {
   const { handleSubmit, register, control } = useForm();
   const password = useWatch({ control, name: 'password' });
@@ -11,6 +12,8 @@ const Signup = () => {
   const navigate = useNavigate();
   const [disabled, setDisabled] = useState(true);
   const dispatch = useDispatch()
+
+  const { isLoading, email, isError, error } = useSelector((state) => state.userSlice);
 
   useEffect(() => {
     if (
@@ -26,6 +29,20 @@ const Signup = () => {
     }
   }, [password, confirmPassword]);
 
+  useEffect(() => {
+    if (error && error) {
+      toast.error(error)
+      navigate("/signup")
+    }
+
+  }, [isError, error, navigate])
+
+  useEffect(() => {
+    if (!isLoading && email) {
+      toast.success("SingedUp successfully");
+      navigate('/')
+    }
+  }, [isLoading, email, navigate])
 
 
   const onSubmit = ({ name, email, password }) => {
@@ -46,11 +63,12 @@ const Signup = () => {
     dispatch(
       googleSignIn()
     )
-    navigate("/")
+    navigate('/')
   };
 
   return (
     <div className="flex max-w-7xl mx-auto h-screen items-center">
+      <Toaster />
       <div className="w-1/2">
         <img src={loginImage} className="h-full w-full" alt="" />
       </div>
