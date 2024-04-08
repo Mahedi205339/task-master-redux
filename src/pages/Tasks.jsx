@@ -10,7 +10,11 @@ import { useGetTaskQuery } from '../api/baseApi';
 const Tasks = () => {
   const [isOpen, setIsOpen] = useState(false);
   // const { tasks } = useSelector((state) => state.tasksSlice);
-  const { data: tasks } = useGetTaskQuery()
+  const { data: tasks } = useGetTaskQuery(undefined, {
+    pollingInterval: 30000,
+    refetchOnMountOrArgChange: true,
+    
+  })
 
   const pendingTasks = tasks?.filter((item) => item.status == 'pending');
   const runningTasks = tasks?.filter((item) => item.status == 'running');
@@ -60,7 +64,7 @@ const Tasks = () => {
               </div>
               <div className="space-y-3">
                 {pendingTasks?.map((item) => (
-                  <TaskCard key={item.id} task={item} />
+                  <TaskCard key={item._id} task={item} />
                 ))}
               </div>
             </div>
@@ -73,7 +77,7 @@ const Tasks = () => {
               </div>
               <div className="space-y-3">
                 {runningTasks?.map((item) => (
-                  <TaskCard key={item.id} task={item} />
+                  <TaskCard key={item._id} task={item} />
                 ))}
               </div>
             </div>
@@ -86,7 +90,7 @@ const Tasks = () => {
               </div>
               <div className="space-y-3">
                 {doneTasks?.map((item) => (
-                  <TaskCard key={item.id} task={item} />
+                  <TaskCard key={item._id} task={item} />
                 ))}
               </div>
             </div>
