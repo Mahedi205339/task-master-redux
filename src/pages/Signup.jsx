@@ -39,8 +39,8 @@ const Signup = () => {
 
   useEffect(() => {
     if (!isLoading && email) {
-      toast.success("SingedUp successfully");
       navigate('/')
+      toast.success("SingedUp successfully");
     }
   }, [isLoading, email, navigate])
 

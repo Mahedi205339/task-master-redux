@@ -15,7 +15,7 @@ const Login = () => {
     dispatch(
       loginUser({
         email,
-        password,
+        password, 
       })
     )
     navigate('/')
